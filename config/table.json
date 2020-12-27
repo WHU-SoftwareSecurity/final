@@ -1,0 +1,78 @@
+{
+  "table_base": {
+    "title": "Reproduction",
+    "show_header": true,
+    "header_style": "bold magenta"
+  },
+  "table_header": [
+    {
+      "header": "ID",
+      "width": 6,
+      "style": "#a6a9b6"
+    },
+    {
+      "header": "Name",
+      "style": "#34626c"
+    },
+    {
+      "header": "Usage",
+      "justify": "right",
+      "style": "#c6b497"
+    },
+    {
+      "header": "Source",
+      "justify": "right",
+      "style": "#839b97"
+    }
+  ],
+  "table_body": [
+    [
+      "1 [green]:heavy_check_mark:",
+      "dangsan ",
+      "detection",
+      "eurosys'17"
+    ],
+    [
+      "2 [green]:heavy_check_mark:",
+      "MarkUs ",
+      "protection",
+      "S&P'20"
+    ],
+    [
+      "3 [green]:heavy_check_mark:",
+      "heap-expo ",
+      "detection",
+      "ACSAC'20"
+    ],
+    [
+      "4 [green]:heavy_check_mark:",
+      "AddressSanitizer ",
+      "detection",
+      "google"
+    ],
+    [
+      "5 [green]:heavy_check_mark:",
+      "GUEB ",
+      "detection",
+      "SSPREW'16"
+    ],
+    [
+      "6 [green]:heavy_check_mark:",
+      "UFO ",
+      "detection",
+      "ICSE'18"
+    ],
+    [
+      "7 [green]:heavy_check_mark:",
+      "HeapDetective ",
+      "detection",
+      "github project"
+    ],
+    [
+      "8 [green]:heavy_check_mark:",
+      "FreeSentry ",
+      "protection",
+      "INDSS'15"
+    ]
+  ]
+}

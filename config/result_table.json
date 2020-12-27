@@ -1,0 +1,22 @@
+{
+  "table_base": {
+    "title": "Results"
+  },
+  "table_header": [
+    {
+      "header": "ID",
+      "justify": "right",
+      "style": "cyan",
+      "no_wrap": true
+    },
+    {
+      "header": "Names",
+      "style": "magenta"
+    },
+    {
+      "header": "Result",
+      "justify": "right",
+      "style": "green"
+    }
+  ]
+}

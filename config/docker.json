@@ -1,0 +1,77 @@
+[
+  {
+    "project_name": "dangsan",
+    "docker_name": "dangsan",
+    "host": "172.17.0.2",
+    "port": 22,
+    "username": "root",
+    "password": "123456",
+    "commands": [
+      "cd ~ && ./test.sh basis.c dangsan"
+    ],
+    "callback": "dangsan_callback"
+  },
+  {
+    "project_name": "heap-expo",
+    "docker_name": "heap-expo",
+    "host": "172.17.0.2",
+    "port": 22,
+    "username": "root",
+    "password": "123456",
+    "commands": [
+      "cd ~ && ./test.sh basis.c heap-expo"
+    ],
+    "callback": "heap_expo_callback"
+  },
+  {
+    "project_name": "AddressSanitizer",
+    "docker_name": "AddressSanitizer",
+    "host": "172.17.0.4",
+    "port": 22,
+    "username": "root",
+    "password": "123456",
+    "commands": [
+      "cd /ctf/work/address_sanitizer && gcc -fsanitize=address -fno-omit-frame-pointer -O1 -g test.c -o test\n./test"
+    ],
+    "callback": "address_sanitizer_callback"
+  },
+  {
+    "project_name": "UFO",
+    "docker_name": "UFO",
+    "host": "172.17.0.3",
+    "port": 22,
+    "username": "root",
+    "password": "123456",
+    "commands": [
+      "cd /ufo; build/bin/clang -fsanitize=thread -g -o0 -Wall test.cc -o test; UFO_ON=1 UFO_CALL=1 UFO_TDIR=./ufo_test_trace UFO_TL_BUF=512 ./test; find ufo_test* -type d | xargs -i  sed -i 's/ufo_test_.*/{}/g' /ufo/ufo-predict/config.properties; cd ufo-predict; java -Xmx2g -jar runufo.jar; cd /ufo; rm -rf ufo_test*;rm test"
+    ],
+    "callback": "ufo_callback"
+  },
+  {
+    "project_name": "GUEB",
+    "docker_name": "GUEB",
+    "host": "127.0.0.1",
+    "port": 22,
+    "username": "root",
+    "password": "123456",
+    "commands": [
+      "echo hello, world",
+      "cd /dev; pwd",
+      "pwd",
+      "ls -al"
+    ],
+    "callback": "gueb_callback"
+  },
+  {
+    "project_name": "HeapDetective",
+    "docker_name": "HeapDetective",
+    "host": "172.17.0.4",
+    "port": 22,
+    "username": "root",
+    "password": "123456",
+    "commands": [
+      "cd /ctf/work/heap_detective\nbin/heap_detective samplers/"
+    ],
+    "callback": "heap_detective_callback"
+  }
+]
