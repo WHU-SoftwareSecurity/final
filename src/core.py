@@ -50,6 +50,8 @@ class DockerProcess(Thread):
 
         self._callback: CallBackFunctionType = None
 
+        self._echo_on = True
+
     def register_callback(self, callback: CallBackFunctionType) -> None:
         self._callback = callback
 
@@ -77,13 +79,12 @@ class DockerProcess(Thread):
     def _apply_command(self, *,
                        command: str,
                        callback: CallBackFunctionType = None) -> None:
-        # stdin, stdout, stderr = map(lambda x : x.read().decode("utf8"),
-                                    # self._ssh.exec_command(command))
         _, stdout, stderr = self._ssh.exec_command(command)
         stdout = stdout.read().decode("utf8")
         stderr = stderr.read().decode("utf8")
 
-        self._display_output(stdout, stderr)
+        if self._echo_on:
+            self._display_output(stdout, stderr)
 
         if callback is not None:
             result = callback(stdout, stderr, self._docker_info)
@@ -136,6 +137,9 @@ class DockerProcess(Thread):
         target_path = f"{self._docker_info.docker_name}:{self._docker_info.upload_path}"
 
         subprocess.run(["docker", "cp", local_file_path, target_path])
+
+    def close_echo(self):
+        self._echo_on = False
 
 
 def load_docker_config(config_json: Union[str, PurePath] = settings.config_docker_json) -> List[DockerInfo]:
