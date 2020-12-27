@@ -62,7 +62,3 @@ def run(file) -> None:
         t.join(10)
 
     generate_table(thread_list)
-
-
-if __name__ == '__main__':
-    cli()
