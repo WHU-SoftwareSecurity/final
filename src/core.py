@@ -4,16 +4,14 @@ from typing import List, Callable, Optional, Union, Dict
 # from multiprocessing import Process
 from threading import Thread
 import time
-import random
+import subprocess
 
 from paramiko import (SSHClient, Transport)
 
 from .config import settings, console
 from .utils import load_json
 
-from rich.live import Live
 from rich.table import Table
-from rich.text import Text
 
 
 @dataclass
@@ -26,6 +24,7 @@ class DockerInfo:
     password: str
     commands: List[str]
     callback: str
+    upload_path: str
 
 
 CallBackFunctionType = Optional[
@@ -120,10 +119,23 @@ class DockerProcess(Thread):
     def project_name(self) -> str:
         return self._docker_info.project_name
 
+    @property
+    def upload_path(self) -> str:
+        return self._docker_info.upload_path
+
+    @property
+    def callback_name(self) -> str:
+        return self._docker_info.callback
+
     def get_result(self) -> Optional[bool]:
         if not hasattr(self, "_result"):
             raise AttributeError("start process before call `get_result`!")
         return getattr(self, "_result")
+
+    def upload_file(self, local_file_path: str) -> None:
+        target_path = f"{self._docker_info.docker_name}:{self._docker_info.upload_path}"
+
+        subprocess.run(["docker", "cp", local_file_path, target_path])
 
 
 def load_docker_config(config_json: Union[str, PurePath] = settings.config_docker_json) -> List[DockerInfo]:
@@ -138,9 +150,10 @@ def generate_table(thread_list: List[DockerProcess]) -> None:
         table.add_column(**column)
 
     for i, t in enumerate(thread_list, start=1):
+        if t.project_name == "HeapDetective":
+            continue
         row = [str(i), t.project_name, "[red]Detected" if t.get_result() else "[green]Undetected"]
         table.add_row(*row)
 
     console.print(table)
-
 

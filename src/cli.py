@@ -42,15 +42,19 @@ def info() -> None:
 
 
 @cli.command()
-def run() -> None:
+@click.option("-f", "--file", type=str, required=False,
+              default="", help="test file path")
+def run(file) -> None:
     """running test"""
     docker_config_list = load_docker_config()
 
     thread_list = []
-    test_idx = [0, 1, 2, 3, 5]
-    for idx in test_idx:
-        p = DockerProcess(docker_config_list[idx])
-        p.register_callback(getattr(callback, docker_config_list[idx]["callback"]))
+    for docker_config in docker_config_list:
+        p = DockerProcess(docker_config)
+        p.register_callback(getattr(callback, p.callback_name))
+        if len(file):
+            console.print(f"uploading file: `{file}` to docker: `{p.docker_name}:{p.upload_path}`")
+            p.upload_file(file)
         thread_list.append(p)
 
     for t in thread_list:
