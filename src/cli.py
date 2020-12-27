@@ -44,7 +44,7 @@ def info() -> None:
 @cli.command()
 @click.option("-f", "--file", type=str, required=False,
               default="", help="test file path")
-@click.argument("-e", "--echo", type=bool, required=False,
+@click.option("-e", "--echo", type=bool, required=False,
                 default=True, help="whether echo detect info")
 def run(file, echo) -> None:
     """running test"""
