@@ -44,7 +44,9 @@ def info() -> None:
 @cli.command()
 @click.option("-f", "--file", type=str, required=False,
               default="", help="test file path")
-def run(file) -> None:
+@click.argument("-e", "--echo", type=bool, required=False,
+                default=True, help="whether echo detect info")
+def run(file, echo) -> None:
     """running test"""
     docker_config_list = load_docker_config()
 
@@ -52,6 +54,10 @@ def run(file) -> None:
     for docker_config in docker_config_list:
         p = DockerProcess(docker_config)
         p.register_callback(getattr(callback, p.callback_name))
+
+        if not echo:
+            p.close_echo()
+
         if len(file):
             console.print(f"uploading file: `{file}` to docker: `{p.docker_name}:{p.upload_path}`")
             p.upload_file(file)
