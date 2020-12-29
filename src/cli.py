@@ -1,16 +1,19 @@
 import time
+import subprocess
+
+from pydantic.fields import Required
 
 from .utils import load_json
 from .config import settings, console
-from .core import (DockerProcess, DockerInfo,
+from .core import (DockerProcess, DockerManager,
                    load_docker_config, generate_table)
+from src import callback
+
 
 import click
 
 from rich.table import Table
 from rich.progress import track
-
-from src import callback
 
 
 @click.group()
@@ -68,3 +71,18 @@ def run(file, echo) -> None:
         t.join(10)
 
     generate_table(thread_list)
+
+
+@cli.command(context_settings={"ignore_unknown_options": True})
+@click.option("-a", "--all_", type=click.Choice(["start", "restart", "stop"], case_sensitive=False),
+              required=False, help="apply same option for all containers")
+@click.argument("command", nargs=-1, required=False)
+def docker(all_, command) -> None:
+    """passing command to docker"""
+    if all_ is not None:
+        docker_manager = DockerManager()
+        getattr(docker_manager, f"{all_}_all")()
+    else:
+        if len(command):
+            DockerManager.execute_command(command)
+        

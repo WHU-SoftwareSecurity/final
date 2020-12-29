@@ -44,7 +44,8 @@ class DockerProcess(Thread):
             raise ValueError("not supported type!")
 
         console.print(f"create project: {self._docker_info.project_name}")
-        self._transport = Transport((self._docker_info.host, self._docker_info.port))
+        self._transport = Transport(
+            (self._docker_info.host, self._docker_info.port))
         self._ssh = SSHClient()
         self._ssh._transport = self._transport
 
@@ -91,7 +92,8 @@ class DockerProcess(Thread):
             if not self._result:
                 self._result = result
         else:
-            raise AttributeError("call `register_callback` before starting process!")
+            raise AttributeError(
+                "call `register_callback` before starting process!")
 
     def join(self, timeout: Optional[float] = ...) -> None:
         super().join(timeout)
@@ -108,9 +110,11 @@ class DockerProcess(Thread):
         time.sleep(1)
         if stderr != '':
             console.print('\n')
-            console.rule(f"[bold red]{self._docker_info.project_name} error output")
+            console.rule(
+                f"[bold red]{self._docker_info.project_name} error output")
             console.log(stderr)
-            console.rule(f"[bold red]{self._docker_info.project_name} error output")
+            console.rule(
+                f"[bold red]{self._docker_info.project_name} error output")
 
     @property
     def docker_name(self) -> str:
@@ -156,8 +160,43 @@ def generate_table(thread_list: List[DockerProcess]) -> None:
     for i, t in enumerate(thread_list, start=1):
         if t.project_name == "HeapDetective":
             continue
-        row = [str(i), t.project_name, "[red]Detected" if t.get_result() else "[green]Undetected"]
+        row = [str(i), t.project_name,
+               "[red]Detected" if t.get_result() else "[green]Undetected"]
         table.add_row(*row)
 
     console.print(table)
 
+
+class DockerManager:
+
+    def __init__(self, *,
+                 docker_config_path: Union[str, PurePath] = settings.config_docker_json) -> None:
+        docker_config_json = load_docker_config(docker_config_path)
+        
+        self._docker_info_list = [
+            DockerInfo(**docker_info) for docker_info in docker_config_json
+        ]
+
+        self._docker_containers = set((docker_info.docker_name for docker_info in self._docker_info_list))
+
+    @property
+    def container_list(self) -> List[str]:
+        return list(self._docker_containers)
+
+    def _do_all(self, option: str) -> None:
+        for d in self._docker_containers:
+            console.print(f"{option} container ", end="")
+            self.execute_command([option, d])
+
+    def start_all(self) -> None:
+        self._do_all("start")
+
+    def restart_all(self) -> None:
+        self._do_all("restart")
+
+    def stop_all(self) -> None:
+        self._do_all("stop")
+
+    @staticmethod
+    def execute_command(command: List[str]) -> None:
+        subprocess.run(["docker", *command])
